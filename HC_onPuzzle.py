@@ -1,7 +1,7 @@
+#!/usr/bin/python3
+
 # we are trying to solve the sliding-tiles puzzle
 # with hill climbing algorithm
-
-# first need to define our space:
 
 from random import randint
 from copy import deepcopy as save_state
@@ -23,6 +23,8 @@ def _pos_2(num):
         for j in range(0, 3):
             if right_order[i][j] == num:
                 return [i, j]
+
+# first need to define our space:
 
 
 class puzzle:
@@ -50,11 +52,18 @@ class puzzle:
 
     def generate_solveable_board(self):
         self.board = save_state(right_order)
-        for i in range(0, 18):
+        f = open('moves.txt',"w+")
+        f.write(str(self.board[0])+'\n')
+        f.write(str(self.board[1])+'\n')
+        f.write(str(self.board[2])+'\n\n')
+        for i in range(0, 12093):
             valid_moves = self.valid_moves()
             gen = randint(0, len(valid_moves)-1)
             self.move(valid_moves[gen])
-
+            f.write(str(self.board[0])+'\n')
+            f.write(str(self.board[1])+'\n')
+            f.write(str(self.board[2])+'\n\n')
+        f.close()
 
 # show the puzzle
 
@@ -65,7 +74,6 @@ class puzzle:
 
 
 # function for move to new state for given new_pos([x,y])
-
 
     def move(self, pos2):
         # pos1 is empty
@@ -119,6 +127,8 @@ class puzzle:
                 pos = self._pos(num)
                 cor_pos = _pos_2(num)
                 dis = _p(pos[1] - cor_pos[1]) + _p(pos[0] - cor_pos[0])
+                if dis == 0:
+                  dis_list.append(-1)
                 dis_list.append(dis)
         for dis in dis_list:
             dis_sum += dis
@@ -196,15 +206,21 @@ class Agent:
 
     def show_path(self):
         node = self.starting_state
-
+        f = open('path.txt',"w+")
+        i=0
         while(True):
-            self.show_state(node.value)
+
+            f.write(str(node.value[0])+'\n')
+            f.write(str(node.value[1])+'\n')
+            f.write(str(node.value[2])+'\n\n')
             if node.next_node != None:
                 node = node.next_node
             else:
-                print('gone')
+                f.close()
+                print('number of changing:', i)
                 return False
-                
+            i=i+1
+
 p = puzzle()
 p.generate_solveable_board()
 ag = Agent(p)
